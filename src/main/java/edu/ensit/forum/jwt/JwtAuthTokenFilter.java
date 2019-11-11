@@ -16,7 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
-
+import org.springframework.beans.factory.annotation.Value;
 
 public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
@@ -28,6 +28,9 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
  private static final Logger logger = LoggerFactory.getLogger(JwtAuthTokenFilter.class);
 
+ @Value("${permitted-url}")
+	private String permittedUrl = "";
+ 
  @Override
  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
      throws ServletException, IOException {
@@ -36,6 +39,13 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
      String jwt = getJwt(request);
      if (jwt != null && tokenProvider.validateJwtToken(jwt)) {
        String username = tokenProvider.getUserNameFromJwtToken(jwt);
+       
+		response.setHeader("Access-Control-Allow-Origin", permittedUrl);
+		response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
+		response.setHeader("Access-Control-Max-Age", "3600");
+	    response.setHeader("Access-Control-Allow-Credentials", "true");
+		response.setHeader("Access-Control-Allow-Headers",
+				"x-requested-with, authorization, Content-Type, Authorization, credential, X-XSRF-TOKEN");
 
        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
