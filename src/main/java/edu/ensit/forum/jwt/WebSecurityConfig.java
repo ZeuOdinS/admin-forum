@@ -70,7 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
    protected void configure(HttpSecurity http) throws Exception {
        http.cors().and().csrf().disable().
                authorizeRequests()
-               .antMatchers("/ForumEnsit/**","/ForumEnsit/params/*")
+               .antMatchers("/**")
                .permitAll()
                .anyRequest().authenticated()
                .and()

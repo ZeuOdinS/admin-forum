@@ -12,7 +12,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -20,29 +20,34 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class CORSFilter implements Filter {
 	
+
+	@Value("${permitted-url}")
+	private String permittedUrl = "";
+
 	@Override
-	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
-			throws IOException, ServletException {
-		HttpServletRequest request = (HttpServletRequest) req;
-	    HttpServletResponse response = (HttpServletResponse) res;
-		response.setHeader("Access-Control-Allow-Origin",  request.getHeader("Origin"));
-		 response.setHeader("Access-Control-Allow-Credentials", "true");
-	        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-	        response.setHeader("Access-Control-Max-Age", "3600");
-	       // response.setHeader("Access-Control-Allow-Headers", "authorization, content-type, xsrf-token");
-	        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me");
-	        //response.addHeader("Access-Control-Expose-Headers", "xsrf-token");
-	       // if ("OPTIONS".equals(request.getMethod())) {
-	           // response.setStatus(HttpServletResponse.SC_OK);
-	       // } else { 
-	        chain.doFilter(request, response);
-	        //}				
+	public void init(FilterConfig fc) throws ServletException {
 	}
 	
 	@Override
-	public void init(FilterConfig filterConfig) {
+	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
+			throws IOException, ServletException {
+		HttpServletResponse response = (HttpServletResponse) resp;
+		HttpServletRequest request = (HttpServletRequest) req;
+		response.setHeader("Access-Control-Allow-Origin", permittedUrl);
+		response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
+		response.setHeader("Access-Control-Max-Age", "3600");
+	    response.setHeader("Access-Control-Allow-Credentials", "true");
+		response.setHeader("Access-Control-Allow-Headers",
+				"x-requested-with, authorization, Content-Type, Authorization, credential, X-XSRF-TOKEN");
+	
+		if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+			response.setStatus(HttpServletResponse.SC_OK);
+		} else {
+			chain.doFilter(req, resp);
+		}
+	
 	}
-
+	
 	@Override
 	public void destroy() {
 	}
