@@ -4,17 +4,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 
 
 
 @Entity
+@Table(name = "users")
 public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long idUser;
+	private long id;
 
 	@Size(min = 3, max = 50)
 	private String phone;
@@ -49,11 +51,12 @@ public class User {
 		this.password = password;
 		this.roles = roles;
 	}
-	public long getIdUser() {
-		return idUser;
+	
+	public long getId() {
+		return id;
 	}
-	public void setIdUser(long idUser) {
-		this.idUser = idUser;
+	public void setId(long id) {
+		this.id = id;
 	}
 	public String getPhone() {
 		return phone;

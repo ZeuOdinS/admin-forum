@@ -47,7 +47,7 @@ public class UserServiceImpl implements  UserService {
 
 	public ResponseEntity<?> updateUser(@Valid @RequestBody User signUpRequest, @PathVariable long id) {
 
-		if (userDao.existsByIdUserNotAndUsername(id, signUpRequest.getUsername())) {
+		if (userDao.existsByIdNotAndUsername(id, signUpRequest.getUsername())) {
 			return new ResponseEntity<>(new ResponseMessage("Fail -> Username is already taken!"),
 					HttpStatus.BAD_REQUEST);
 		}
@@ -57,7 +57,7 @@ public class UserServiceImpl implements  UserService {
 		if (!signUpRequest.getPassword().equals(user.getPassword())) {
 			signUpRequest.setPassword(encoder.encode(signUpRequest.getPassword()));
 		}
-		signUpRequest.setIdUser(id);
+		signUpRequest.setId(id);
 		userDao.save(signUpRequest);
 
 		return new ResponseEntity<>(new ResponseMessage("User registered successfully!"), HttpStatus.OK);
