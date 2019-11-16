@@ -30,7 +30,7 @@ EntrepriseDao entrDao;
 					HttpStatus.BAD_REQUEST);
 		}
 		 entrDao.save(entreprise);
-			return new ResponseEntity<>(new ResponseMessage("entreprise registered successfully!"), HttpStatus.OK);
+			return new ResponseEntity<>(new ResponseMessage("Inscription registered successfully!"), HttpStatus.OK);
 
 	}
 
@@ -38,6 +38,28 @@ EntrepriseDao entrDao;
 	public List<Entreprise> findAll() {
 		// TODO Auto-generated method stub
 		return entrDao.findAll();
+	}
+
+	@Override
+	public Entreprise findById(Long id) {
+		return entrDao.findById(id).get();
+	}
+
+	@Override
+	public void delete(Long id) {
+		entrDao.deleteById(id);
+		
+	}
+
+	@Override
+	public ResponseEntity<?> updateInvite(Entreprise entreprise, long id) {
+		if (entrDao.existsByIdNotAndEmail(id, entreprise.getEmail())) {
+			return new ResponseEntity<>(new ResponseMessage("Fail -> Email is already taken!"),
+					HttpStatus.BAD_REQUEST);
+		}
+		entrDao.save(entreprise);
+
+		return new ResponseEntity<>(new ResponseMessage("Update successfully!"), HttpStatus.OK);
 	}
 
 }

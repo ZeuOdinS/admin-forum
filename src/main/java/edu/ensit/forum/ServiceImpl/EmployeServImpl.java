@@ -34,7 +34,7 @@ public class EmployeServImpl implements EmployeService {
 					HttpStatus.BAD_REQUEST);
 		}
 		 emplDao.save(employe);
-		return new ResponseEntity<>(new ResponseMessage("employe registered successfully!"), HttpStatus.OK);
+		return new ResponseEntity<>(new ResponseMessage("Inscription registered successfully!"), HttpStatus.OK);
 
 	}
 
@@ -42,6 +42,28 @@ public class EmployeServImpl implements EmployeService {
 	public List<Employe> findAll() {
 		// TODO Auto-generated method stub
 		return emplDao.findAll();
+	}
+
+	@Override
+	public Employe findById(Long id) {
+		return emplDao.findById(id).get();
+	}
+
+	@Override
+	public void delete(Long id) {
+		emplDao.deleteById(id);
+		
+	}
+
+	@Override
+	public ResponseEntity<?> updateInvite(Employe employe, long id) {
+		if (emplDao.existsByIdNotAndEmail(id, employe.getEmail())) {
+			return new ResponseEntity<>(new ResponseMessage("Fail -> Email is already taken!"),
+					HttpStatus.BAD_REQUEST);
+		}
+		emplDao.save(employe);
+
+		return new ResponseEntity<>(new ResponseMessage("Update successfully!"), HttpStatus.OK);
 	}
 
 }
